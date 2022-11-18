@@ -1,0 +1,28 @@
+---
+import PageLayout from "$/layouts/page.astro";
+import ContactPageLayout from "$/layouts/contact.astro";
+import { getAPI } from "$/utils/fetchApi";
+import type { Page } from "../../types";
+
+const { slug } = Astro.params;
+const page: Page | null = await getAPI("page/" + slug);
+const Layout = page?.id % 2 ? PageLayout : ContactPageLayout;
+---
+
+<Layout
+  content={{
+    title: `Posts by Tag: ${slug}`,
+    description: `all of the articles we have posted and linked so far under the tag: ${slug}`,
+  }}
+>
+  {
+    page ? (
+      <div>
+        {JSON.stringify(page)}
+        <div set:html={page.content} />
+      </div>
+    ) : (
+      <div>404</div>
+    )
+  }
+</Layout>
